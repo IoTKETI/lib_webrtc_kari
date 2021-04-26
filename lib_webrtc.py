@@ -75,7 +75,7 @@ def control_web(driver):
     button_id = driver.find_element_by_id('start')
     button_id.click()
 
-    time.sleep(3)
+    time.sleep(2)
 
     for entry in driver.get_log('browser'):
         print('entry: ', entry)
@@ -89,9 +89,15 @@ def control_web(driver):
             elif log_t[3] == 'handle:':
                 handle_id = log_t[4][:-1]
 
+    time.sleep(2)
+
     if (session_id is not None) and (handle_id is not None):
         room_number = argv[3]
         rsc, res_body = crt_room(session_id, handle_id, room_number)
+    else:
+        driver.quit()
+        time.sleep(2)
+        openWeb()
 
     driver.implicitly_wait(5)
     time.sleep(2)
