@@ -20,6 +20,8 @@ handle_id = ''
 room_number = ''
 count = 0
 
+argv = sys.argv
+
 
 def rand_var():
     rand_str = ''
@@ -68,6 +70,7 @@ def control_web(driver):
     global handle_id
     global room_number
     global flag
+    global argv
 
     button_id = driver.find_element_by_id('start')
     button_id.click()
@@ -83,7 +86,7 @@ def control_web(driver):
             elif log_t[3] == 'handle:':
                 handle_id = log_t[4][:-1]
 
-    room_number = http_app.drone_info["room"]
+    room_number = argv[3]
     rsc, res_body = crt_room(session_id, handle_id, room_number)
 
     driver.implicitly_wait(5)
@@ -107,8 +110,9 @@ def control_web(driver):
 def crt_room(session_id, handle_id, room_number):
     # global session_id
     # global handle_id
+    global argv
 
-    url = "http://" + http_app.drone_info["host"] + ":8088/janus"
+    url = "http://" + argv[1] + ":8088/janus"
 
     payload = json.dumps({
         "janus": "message",
@@ -153,8 +157,9 @@ def destroy_room():
     global session_id
     global handle_id
     global room_number
+    global argv
 
-    url = "http://" + http_app.drone_info["host"] + ":8088/janus"
+    url = "http://" + argv[1] + ":8088/janus"
 
     payload = json.dumps({
         "janus": "message",
@@ -195,8 +200,9 @@ def get_participants():
     global handle_id
     global room_number
     global count
+    global argv
 
-    url = "http://" + http_app.drone_info["host"] + ":8088/janus"
+    url = "http://" + argv[1] + ":8088/janus"
 
     payload = json.dumps({
         "janus": "message",
@@ -231,10 +237,9 @@ def get_participants():
         pass
 
 
-def webrtc():
-    global display_name
+if __name__ == '__main__':
 
-    display_name = http_app.drone_info["drone"]
+    display_name = argv[2]
 
     if display_name.isalnum():
         pass
