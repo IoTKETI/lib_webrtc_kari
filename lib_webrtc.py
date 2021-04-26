@@ -78,14 +78,11 @@ def control_web(driver):
     time.sleep(2)
 
     for entry in driver.get_log('browser'):
-        print('entry: ', entry)
         level = entry['level']
-        print('level: ', level)
         if level == 'INFO':
             log_t = entry['message'].split(' ')
             if log_t[3] == 'session:':
                 session_id = log_t[4][:-1]
-                print('session_id 1: ', session_id)
             elif log_t[3] == 'handle:':
                 handle_id = log_t[4][:-1]
 
@@ -256,3 +253,6 @@ if __name__ == '__main__':
     else:
         display_name = ''.join(char for char in display_name if char.isalnum())
     openWeb()
+
+
+# sudo python3 -m PyInstaaler -F lib_webrtc.py
