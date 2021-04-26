@@ -75,19 +75,23 @@ def control_web(driver):
     button_id = driver.find_element_by_id('start')
     button_id.click()
 
-    time.sleep(1)
+    time.sleep(3)
 
     for entry in driver.get_log('browser'):
+        print('entry: ', entry)
         level = entry['level']
+        print('level: ', level)
         if level == 'INFO':
             log_t = entry['message'].split(' ')
             if log_t[3] == 'session:':
                 session_id = log_t[4][:-1]
+                print('session_id 1: ', session_id)
             elif log_t[3] == 'handle:':
                 handle_id = log_t[4][:-1]
 
-    room_number = argv[3]
-    rsc, res_body = crt_room(session_id, handle_id, room_number)
+    if (session_id is not None) and (handle_id is not None):
+        room_number = argv[3]
+        rsc, res_body = crt_room(session_id, handle_id, room_number)
 
     driver.implicitly_wait(5)
     time.sleep(2)
