@@ -65,9 +65,20 @@ def openWeb():
                                       executable_path='/usr/local/bin/chromedriver')
         else:
             raise EnvironmentError('Unsupported platform')
-    except FileNotFoundError as e:
+    except Exception as e:
         print("Can not found chromedriver..\n", e)
         os.system('sh ./ready_to_WebRTC.sh ')
+        if sys.platform.startswith('win'):  # Windows
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='chromedriver')
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='/usr/lib/chromium-browser/chromedriver')
+        elif sys.platform.startswith('darwin'):  # MacOS
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='/usr/local/bin/chromedriver')
+        else:
+            raise EnvironmentError('Unsupported platform')
 
     driver.get("https://203.253.128.177/videoroomtest.html")
 
