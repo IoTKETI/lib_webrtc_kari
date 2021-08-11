@@ -12,7 +12,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-import time, sys, requests, json, uuid, random, string
+import time
+import sys
+import requests
+import json
+import os
+import random
+import string
 
 display_name = ''
 session_id = ''
@@ -47,14 +53,21 @@ def openWeb():
     capabilities = DesiredCapabilities.CHROME
     capabilities['goog:loggingPrefs'] = {'browser': 'ALL'}
 
-    if sys.platform.startswith('win'):  # Windows
-        driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities, executable_path='chromedriver')
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
-        driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities, executable_path='/usr/lib/chromium-browser/chromedriver')
-    elif sys.platform.startswith('darwin'):  # MacOS
-        driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities, executable_path='/usr/local/bin/chromedriver')
-    else:
-        raise EnvironmentError('Unsupported platform')
+    try:
+        if sys.platform.startswith('win'):  # Windows
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='chromedriver')
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='/usr/lib/chromium-browser/chromedriver')
+        elif sys.platform.startswith('darwin'):  # MacOS
+            driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
+                                      executable_path='/usr/local/bin/chromedriver')
+        else:
+            raise EnvironmentError('Unsupported platform')
+    except Exception as e:
+        print('[ChromeDriver Error] - ', e)
+        os.system('sh ./ready_to_WebRTC.sh ')
 
     driver.get("https://203.253.128.177/videoroomtest.html")
 
