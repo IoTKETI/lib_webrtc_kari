@@ -133,9 +133,15 @@ def control_web(driver):
     # register_id = driver.find_element_by_id('register')
     # register_id.click()
     while True:
-        pass
-        # time.sleep(10)
-        # get_participants()
+        try:
+            if driver.find_element_by_id('publish'):
+                publish_btn = driver.find_element_by_id('publish')
+                publish_btn.click()
+            else:
+                pass
+        except Exception as e:
+            print(e)
+            pass
 
 
 def crt_room(session_id, handle_id, room_number):
