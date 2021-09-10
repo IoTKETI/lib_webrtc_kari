@@ -116,7 +116,7 @@ def msw_mqtt_connect(broker_ip, port):
     control_topic = '/MUV/control/lib_webrtc/Control'
     lib_mqtt_client.subscribe(control_topic, 0)
 
-    lib_mqtt_client.loop_start()
+    lib_mqtt_client.loop_forever()
     return lib_mqtt_client
 
 
@@ -140,10 +140,11 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
-        if con == 'ON':
+        print(con)
+        if con.find('ON') != -1:
             print('recieved ON message')
             presenter_key.click()
-        elif con == 'OFF':
+        elif con.find('OFF') != -1:
             print('recieved OFF message')
             stop_key.click()
 
