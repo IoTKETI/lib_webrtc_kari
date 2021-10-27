@@ -68,22 +68,21 @@ def openWeb():
             raise EnvironmentError('Unsupported platform')
     except Exception as e:
         print("Can not found chromedriver..\n", e)
-        os.system('sh ./ready_to_WebRTC.sh ')
         if sys.platform.startswith('win'):  # Windows
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='C:/Users/dnjst/Downloads/chromedriver')
+                                      executable_path='chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
+            os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/lib/chromium-browser/chromedriver')
         elif sys.platform.startswith('darwin'):  # MacOS
+            os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/local/bin/chromedriver')
         else:
             raise EnvironmentError('Unsupported platform')
 
     driver.get("https://{0}/drone?id={1}".format(host, display_name))
-    presenter_key = driver.find_element_by_id('call')
-    stop_key = driver.find_element_by_id('terminate')
     control_web(driver)
 
 
@@ -95,12 +94,12 @@ def control_web(driver):
     global presenter_key
     global stop_key
 
-    msw_mqtt_connect(broker_ip, port)
+    # msw_mqtt_connect(broker_ip, port)
 
-    # while True:
+    while True:
     #     Room_Number = driver.find_element_by_id('roomnumber')
     #     # Room_Number.send_keys(room_number)
-    #     pass
+        pass
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -116,7 +115,7 @@ def msw_mqtt_connect(broker_ip, port):
     control_topic = '/MUV/control/lib_webrtc/Control'
     lib_mqtt_client.subscribe(control_topic, 0)
 
-    lib_mqtt_client.loop_forever()
+    lib_mqtt_client.loop_start()
     return lib_mqtt_client
 
 
@@ -140,21 +139,20 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
-        print(con)
-        if con.find('ON') != -1:
+        if con == 'ON':
             print('recieved ON message')
             presenter_key.click()
-        elif con.find('OFF') != -1:
+        elif con == 'OFF':
             print('recieved OFF message')
             stop_key.click()
 
 
 if __name__ == '__main__':
 
-    display_name = "KETI_WebRTC"# argv[2]
-    host = "13.209.34.14"  # argv[1]  # 13.209.34.14
+    display_name = argv[2]  # argv[2]  # "KETI_WebRTC"
+    host = argv[1]  # argv[1]  # 13.209.34.14
 
     openWeb()
 
 
-# sudo python3 -m PyInstaaler -F lib_webrtc.py
+# sudo python3 -m PyInstaller -F lib_webrtc.py
