@@ -8,18 +8,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import paho.mqtt.client as mqtt
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 
-import time
 import sys
-import requests
-import json
 import os
-import random
-import string
 
 display_name = ''
 host = ''
@@ -38,6 +29,7 @@ def openWeb():
     global host
     global presenter_key
     global stop_key
+    global driver
 
     opt = Options()
     opt.add_argument("--disable-infobars")
@@ -57,7 +49,7 @@ def openWeb():
     try:
         if sys.platform.startswith('win'):  # Windows
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='chromedriver')
+                                      executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/lib/chromium-browser/chromedriver')
@@ -70,7 +62,7 @@ def openWeb():
         print("Can not found chromedriver..\n", e)
         if sys.platform.startswith('win'):  # Windows
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='chromedriver')
+                                      executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
@@ -94,7 +86,7 @@ def control_web(driver):
     global presenter_key
     global stop_key
 
-    # msw_mqtt_connect(broker_ip, port)
+    msw_mqtt_connect(broker_ip, port)
 
     while True:
     #     Room_Number = driver.find_element_by_id('roomnumber')
@@ -136,15 +128,16 @@ def on_message(client, userdata, msg):
     global con
     global presenter_key
     global stop_key
+    global driver
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
         if con == 'ON':
             print('recieved ON message')
-            presenter_key.click()
+            openWeb()
         elif con == 'OFF':
             print('recieved OFF message')
-            stop_key.click()
+            driver.quit()
 
 
 if __name__ == '__main__':
