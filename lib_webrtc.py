@@ -88,7 +88,10 @@ def control_web(driver):
     global stop_key
 
     msw_mqtt_connect(broker_ip, port)
-
+    
+    time.sleep(5)
+    driver.refresh()
+    
     while True:
     #     Room_Number = driver.find_element_by_id('roomnumber')
     #     # Room_Number.send_keys(room_number)
