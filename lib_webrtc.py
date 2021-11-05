@@ -75,7 +75,7 @@ def openWeb():
         else:
             raise EnvironmentError('Unsupported platform')
 
-    driver.get("https://{0}/drone?id={1}".format(host, display_name))
+    driver.get("https://{0}/drone?id={1}&audio=false".format(host, display_name))
     control_web(driver)
 
 
