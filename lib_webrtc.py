@@ -11,6 +11,7 @@ import paho.mqtt.client as mqtt
 
 import sys
 import os
+import time
 
 display_name = ''
 host = ''
@@ -89,7 +90,7 @@ def control_web(driver):
 
     msw_mqtt_connect(broker_ip, port)
     
-    time.sleep(5)
+    time.sleep(3)
     driver.refresh()
     
     while True:
