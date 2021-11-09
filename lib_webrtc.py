@@ -22,6 +22,7 @@ presenter_key = ''
 stop_key = ''
 
 argv = sys.argv
+flag = 0
 
 
 def openWeb():
@@ -129,15 +130,21 @@ def on_message(client, userdata, msg):
     global presenter_key
     global stop_key
     global driver
+    global flag
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
         if con == 'ON':
             print('recieved ON message')
-            openWeb()
+            if flag == 0:
+                flag = 1
+                openWeb()
+            elif flag == 1:
+                flag = 0
         elif con == 'OFF':
             print('recieved OFF message')
             driver.quit()
+            driver = None
 
 
 if __name__ == '__main__':
