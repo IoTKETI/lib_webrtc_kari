@@ -1,0 +1,8 @@
+{
+    "name": "lib_webrtc",
+    "target": "armv6",
+    "description": "[name]",
+    "scripts": "./lib_webrtc",
+    "data": [],
+    "control": ["Control"]
+}
