@@ -13,25 +13,21 @@ import sys
 import os
 import time
 
-display_name = ''
+drone = ''
 host = ''
 
 broker_ip = 'localhost'
 port = 1883
 
-presenter_key = ''
-stop_key = ''
-
 argv = sys.argv
 flag = 0
 
+status = 'OFF'
 
-def openWeb():
-    global display_name
-    global host
-    global presenter_key
-    global stop_key
+
+def openWeb(host, drone):
     global driver
+    global status
 
     opt = Options()
     opt.add_argument("--disable-infobars")
@@ -75,28 +71,13 @@ def openWeb():
                                       executable_path='/usr/local/bin/chromedriver')
         else:
             raise EnvironmentError('Unsupported platform')
-
-    driver.get("https://{0}/drone?id={1}&audio=false".format(host, display_name))
-    control_web(driver)
-
-
-def control_web(driver):
-    global display_name
-    global host
-    global broker_ip
-    global port
-    global presenter_key
-    global stop_key
-
-    msw_mqtt_connect(broker_ip, port)
-    
-    time.sleep(3)
-    driver.refresh()
-    
-    while True:
-    #     Room_Number = driver.find_element_by_id('roomnumber')
-    #     # Room_Number.send_keys(room_number)
-        pass
+    # print(status)
+    # if status == 'ON':
+    #     print('=============================')
+    #     print(host, drone)
+    #     print('=============================')
+    #     driver.get("https://{0}/drone?id={1}&audio=false".format(host, drone))
+    driver.get("https://{0}/drone?id={1}&audio=false".format(host, drone))
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -112,7 +93,8 @@ def msw_mqtt_connect(broker_ip, port):
     control_topic = '/MUV/control/lib_webrtc/Control'
     lib_mqtt_client.subscribe(control_topic, 0)
 
-    lib_mqtt_client.loop_start()
+    # lib_mqtt_client.loop_start()
+    lib_mqtt_client.loop_forever()
     return lib_mqtt_client
 
 
@@ -131,10 +113,9 @@ def on_subscribe(client, userdata, mid, granted_qos):
 def on_message(client, userdata, msg):
     global control_topic
     global con
-    global presenter_key
-    global stop_key
     global driver
     global flag
+    global status
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
@@ -142,21 +123,24 @@ def on_message(client, userdata, msg):
             print('recieved ON message')
             if flag == 0:
                 flag = 1
-                openWeb()
+                openWeb(host, drone)
             elif flag == 1:
                 flag = 0
+            status = 'ON'
         elif con == 'OFF':
             print('recieved OFF message')
             driver.quit()
             driver = None
+            flag = 0
+            status = 'OFF'
 
 
 if __name__ == '__main__':
 
-    display_name = argv[2]  # argv[2]  # "KETI_WebRTC"
+    drone = argv[2]  # argv[2]  # "KETI_WebRTC"
     host = argv[1]  # argv[1]  # 13.209.34.14
 
-    openWeb()
-
+    time.sleep(1)
+    msw_mqtt_connect(broker_ip, port)
 
 # sudo python3 -m PyInstaller -F lib_webrtc.py
