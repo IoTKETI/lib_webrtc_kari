@@ -143,8 +143,9 @@ if __name__ == '__main__':
 
     time.sleep(1)
 
-    if status == 'ON':
-        openWeb(host, drone)
+    openWeb(host, drone)
+    status = 'ON'
+    flag = 1
 
     msw_mqtt_connect(broker_ip, port)
 
