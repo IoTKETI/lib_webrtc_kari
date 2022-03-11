@@ -50,7 +50,7 @@ def openWeb(host, drone):
                                       executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='/usr/lib/chromium-browser/chromedriver')
+                                      executable_path='/usr/lib/chromium-browser/chromium-browser')
         elif sys.platform.startswith('darwin'):  # MacOS
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/local/bin/chromedriver')
@@ -64,7 +64,7 @@ def openWeb(host, drone):
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='/usr/lib/chromium-browser/chromedriver')
+                                      executable_path='/usr/lib/chromium-browser/chromium-browser')
         elif sys.platform.startswith('darwin'):  # MacOS
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
