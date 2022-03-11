@@ -35,6 +35,8 @@ def openWeb(host, drone):
     opt.add_argument("--disable-extensions")
     opt.add_argument('--ignore-certificate-errors')
     opt.add_argument('--ignore-ssl-errors')
+    opt.add_argument('--headless')
+    opt.add_argument('--no-sandbox')
 
     opt.add_experimental_option("prefs", {
         "profile.default_content_setting_values.media_stream_mic": 1,
@@ -50,7 +52,7 @@ def openWeb(host, drone):
                                       executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='/usr/lib/chromium-browser/chromium-browser')
+                                      executable_path='/usr/lib/chromium-browser/chromedriver')
         elif sys.platform.startswith('darwin'):  # MacOS
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/local/bin/chromedriver')
@@ -64,7 +66,7 @@ def openWeb(host, drone):
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='/usr/lib/chromium-browser/chromium-browser')
+                                      executable_path='/usr/lib/chromium-browser/chromedriver')
         elif sys.platform.startswith('darwin'):  # MacOS
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
