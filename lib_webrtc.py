@@ -22,7 +22,7 @@ port = 1883
 argv = sys.argv
 flag = 0
 
-status = 'OFF'
+status = 'ON'
 
 
 def openWeb(host, drone):
@@ -77,7 +77,7 @@ def openWeb(host, drone):
     #     print(host, drone)
     #     print('=============================')
     #     driver.get("https://{0}/drone?id={1}&audio=false".format(host, drone))
-    driver.get("https://{0}/drone?id={1}&audio=false".format(host, drone))
+    driver.get("https://{0}/drone?id={1}&audio=true".format(host, drone))
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -136,11 +136,14 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == '__main__':
-
-    drone = argv[2]  # argv[2]  # "KETI_WebRTC"
     host = argv[1]  # argv[1]  # 13.209.34.14
+    drone = argv[2]  # argv[2]  # "KETI_WebRTC"
 
     time.sleep(1)
+
+    if status == 'ON':
+        openWeb(host, drone)
+
     msw_mqtt_connect(broker_ip, port)
 
 # sudo python3 -m PyInstaller -F lib_webrtc.py
