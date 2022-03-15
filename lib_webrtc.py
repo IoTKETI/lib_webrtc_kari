@@ -35,8 +35,8 @@ def openWeb(host, drone):
     opt.add_argument("--disable-extensions")
     opt.add_argument('--ignore-certificate-errors')
     opt.add_argument('--ignore-ssl-errors')
-    opt.add_argument('--headless')
-    opt.add_argument('--no-sandbox')
+    # opt.add_argument('--headless')
+    # opt.add_argument('--no-sandbox')
 
     opt.add_experimental_option("prefs", {
         "profile.default_content_setting_values.media_stream_mic": 1,
@@ -81,14 +81,22 @@ def openWeb(host, drone):
         else:
             print('Running LIB on other OS')
             raise EnvironmentError('Unsupported platform')
-    # print(status)
-    # if status == 'ON':
-    #     print('=============================')
-    #     print(host, drone)
-    #     print('=============================')
-    #     driver.get("https://{0}/drone?id={1}&audio=false".format(host, drone))
-    driver.get("https://{0}/drone?id={1}&audio=true".format(host, drone))
 
+    driver.get("https://{0}/drone?id={1}&audio=true".format(host, drone))
+    control_web(driver)
+
+
+def control_web(driver):
+    global broker_ip
+    global port
+
+    msw_mqtt_connect(broker_ip, port)
+    
+    time.sleep(3)
+    driver.refresh()
+    
+    while True:
+        pass
 
 def msw_mqtt_connect(broker_ip, port):
     global lib_mqtt_client
@@ -103,8 +111,7 @@ def msw_mqtt_connect(broker_ip, port):
     control_topic = '/MUV/control/lib_webrtc/Control'
     lib_mqtt_client.subscribe(control_topic, 0)
 
-    # lib_mqtt_client.loop_start()
-    lib_mqtt_client.loop_forever()
+    lib_mqtt_client.loop_start()
     return lib_mqtt_client
 
 
@@ -155,6 +162,6 @@ if __name__ == '__main__':
     status = 'ON'
     flag = 1
 
-    msw_mqtt_connect(broker_ip, port)
+    #msw_mqtt_connect(broker_ip, port)
 
 # sudo python3 -m PyInstaller -F lib_webrtc.py
