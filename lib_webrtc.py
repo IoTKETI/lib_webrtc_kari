@@ -48,30 +48,38 @@ def openWeb(host, drone):
 
     try:
         if sys.platform.startswith('win'):  # Windows
+            print('Running LIB on Windows')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
+            print('Running LIB on Linux/Rasbian')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/lib/chromium-browser/chromedriver')
         elif sys.platform.startswith('darwin'):  # MacOS
+            print('Running browser on MacOS')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/local/bin/chromedriver')
         else:
+            print('Running LIB on other OS')
             raise EnvironmentError('Unsupported platform')
     except Exception as e:
         print("Can not found chromedriver..\n", e)
         if sys.platform.startswith('win'):  # Windows
+            print('Running LIB on Windows')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
+            print('Running LIB on Linux/Rasbian')
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/lib/chromium-browser/chromedriver')
         elif sys.platform.startswith('darwin'):  # MacOS
+            print('Running browser on MacOS')
             os.system('sh ./ready_to_WebRTC.sh')
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/local/bin/chromedriver')
         else:
+            print('Running LIB on other OS')
             raise EnvironmentError('Unsupported platform')
     # print(status)
     # if status == 'ON':
