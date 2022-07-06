@@ -176,7 +176,11 @@ def on_message(client, userdata, msg):
 
 if __name__ == '__main__':
     drone = argv[1]  # argv[2]  # "KETI_WebRTC"
-
+    if drone.isalnum():
+        pass
+    else:
+        drone = ''.join(char for char in drone if char.isalnum())
+      
     time.sleep(1)
 
     openWeb()
