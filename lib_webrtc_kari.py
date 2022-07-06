@@ -103,12 +103,19 @@ def control_web(wd):
 
     msw_mqtt_connect(broker_ip, port)
 
-    wd.find_element("id", 'start').click()
-    time.sleep(1)
-    username_id = wd.find_element("id", "username")
-    username_id.send_keys(drone)
-    time.sleep(1)
-    username_id.send_keys(Keys.RETURN)
+    try:
+        wd.find_element("id", 'start').click()
+    
+        time.sleep(1)
+
+        username_id = wd.find_element("id", "username")
+        username_id.send_keys(drone)
+
+        time.sleep(1)
+
+        username_id.send_keys(Keys.RETURN)
+    except Exception as e:
+        pass
 
     while True:
         try:
@@ -130,7 +137,7 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client.on_subscribe = on_subscribe
     lib_mqtt_client.on_message = on_message
     lib_mqtt_client.connect(broker_ip, port)
-    control_topic = '/MUV/control/lib_webrtc/Control'
+    control_topic = '/MUV/control/lib_webrtc_kari/Control'
     lib_mqtt_client.subscribe(control_topic, 0)
 
     lib_mqtt_client.loop_start()
@@ -158,7 +165,8 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
-        con.upper()
+        con = con.upper()
+        print(con)
         if con == 'ON':
             print('recieved ON message')
             if flag == 0:
