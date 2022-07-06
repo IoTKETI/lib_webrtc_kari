@@ -7,6 +7,10 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+
 import paho.mqtt.client as mqtt
 
 import sys
@@ -14,7 +18,6 @@ import os
 import time
 
 drone = ''
-host = ''
 
 broker_ip = 'localhost'
 port = 1883
@@ -24,8 +27,13 @@ flag = 0
 
 status = 'ON'
 
+lib_mqtt_client = None
+control_topic = ''
+con = ''
+driver = None
 
-def openWeb(host, drone):
+
+def openWeb():
     global driver
     global status
 
@@ -35,8 +43,6 @@ def openWeb(host, drone):
     opt.add_argument("--disable-extensions")
     opt.add_argument('--ignore-certificate-errors')
     opt.add_argument('--ignore-ssl-errors')
-    # opt.add_argument('--headless')
-    # opt.add_argument('--no-sandbox')
 
     opt.add_experimental_option("prefs", {
         "profile.default_content_setting_values.media_stream_mic": 1,
@@ -82,21 +88,37 @@ def openWeb(host, drone):
             print('Running LIB on other OS')
             raise EnvironmentError('Unsupported platform')
 
-    driver.get("https://{0}/drone?id={1}&audio=true".format(host, drone))
+    driver.get("https://kiwi-drone.duckdns.org:8080/demo/vroom")
+
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.element_to_be_clickable(('id', 'start')))
+
     control_web(driver)
 
 
-def control_web(driver):
+def control_web(wd):
     global broker_ip
     global port
+    global drone
 
     msw_mqtt_connect(broker_ip, port)
-    
-    time.sleep(3)
-    driver.refresh()
-    
+
+    wd.find_element("id", 'start').click()
+    time.sleep(1)
+    username_id = wd.find_element("id", "username")
+    username_id.send_keys(drone)
+    time.sleep(1)
+    username_id.send_keys(Keys.RETURN)
+
     while True:
-        pass
+        try:
+            if wd.find_element('id', 'publish'):
+                wd.find_element('id', 'publish').click()
+            else:
+                pass
+        except Exception as e:
+            pass
+
 
 def msw_mqtt_connect(broker_ip, port):
     global lib_mqtt_client
@@ -140,7 +162,7 @@ def on_message(client, userdata, msg):
             print('recieved ON message')
             if flag == 0:
                 flag = 1
-                openWeb(host, drone)
+                openWeb()
             elif flag == 1:
                 flag = 0
             status = 'ON'
@@ -153,15 +175,14 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == '__main__':
-    host = argv[1]  # argv[1]  # 13.209.34.14
-    drone = argv[2]  # argv[2]  # "KETI_WebRTC"
+    drone = argv[1]  # argv[2]  # "KETI_WebRTC"
 
     time.sleep(1)
 
-    openWeb(host, drone)
+    openWeb()
     status = 'ON'
     flag = 1
 
-    #msw_mqtt_connect(broker_ip, port)
+    # msw_mqtt_connect(broker_ip, port)
 
-# sudo python3 -m PyInstaller -F lib_webrtc.py
+# sudo python3 -m PyInstaller -F lib_webrtc_kari.py
