@@ -158,6 +158,7 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = msg.payload.decode('utf-8')
+        con.upper()
         if con == 'ON':
             print('recieved ON message')
             if flag == 0:
